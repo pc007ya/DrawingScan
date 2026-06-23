@@ -1,6 +1,7 @@
 flask==3.0.3
 paddleocr==2.7.3
 paddlepaddle==2.6.2
+numpy<2.0.0
 pandas==2.2.2
 pdf2image==1.17.0
 pillow==10.3.0
