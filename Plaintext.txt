@@ -1,0 +1,13 @@
+fai-automation/
+│
+├── .github/
+│   └── workflows/
+│       └── fai_opensource.yml   # GitHub Actions 自動化腳本
+│
+├── templates/
+│   └── index.html               # 前端 Web 介面
+│
+├── app.py                       # Flask 後端伺服器主程式
+├── process_fai.py               # 開源 FAI 辨識核心邏輯
+├── requirements.txt             # Python 依賴套件清單
+└── README.md                    # 專案說明文件
