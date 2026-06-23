@@ -1,0 +1,48 @@
+name: Open Source FAI Pipeline
+
+on:
+  push:
+    paths:
+      - 'inputs/**.pdf'
+
+jobs:
+  run-fai-ocr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install Linux Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y poppler-utils libgomp1
+
+    - name: Install Python Requirements
+      run: |
+        pip install -r requirements.txt
+
+    - name: Batch Process FAI
+      run: |
+        python -c "
+        import os, glob
+        from process_fai import run_fai_extraction
+        os.makedirs('outputs', exist_ok=True)
+        for pdf in glob.glob('inputs/*.pdf'):
+            out = os.path.join('outputs', os.path.basename(pdf).rsplit('.',1)[0]+'_FAI.csv')
+            run_fai_extraction(pdf, out)
+        "
+
+    - name: Commit CSV Output
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        if [ -d outputs ] && [ "$(ls -A outputs)" ]; then
+          git add outputs/*.csv
+          git commit -m "🤖 自動生成: FAI 數據報告"
+          git push
+        fi
